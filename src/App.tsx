@@ -1,13 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
 import './App.css'
+import { stringFromBase64URL } from "./base64url";
 
 function App() {
   const [count, setCount] = useState(0)
+  const searchParams = new URLSearchParams(document.location.search);
+  const b64cert:string|null = searchParams.get('p');
+  let cert : string[] = ["INVALID CERTIFICATE PARAMETERS"];
+
+  if (b64cert !== null ) {
+    //cert = btoa(cert);
+    let _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
+
+  }
 
   return (
     <>
+      <div> 
+        <p>B64: {b64cert}</p>
+        <p>Cert: {cert}</p>
+      </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
