@@ -2,12 +2,19 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { useParams } from "react-router-dom";
 
 function App() {
+  let { event } = useParams<"event">();
   const [count, setCount] = useState(0)
+
+  console.log(`Event ${event}`)
 
   return (
     <>
+      <div> 
+        <p>Validation of certificates for event {event}</p>
+      </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
