@@ -8,7 +8,11 @@ function App() {
   const [count, setCount] = useState(0)
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
-  let cert : string[] = ["INVALID CERTIFICATE PARAMETERS"];
+  //let cert : string[] = ["INVALID CERTIFICATE PARAMETERS"];
+  let cert = {
+    'event': '',
+    ''
+  };
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
