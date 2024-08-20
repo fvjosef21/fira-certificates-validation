@@ -1,5 +1,7 @@
 import './certificate.css';
+import {ReactNode} from 'react';
 
+import React from 'react';
 export interface Certificate {
     competition: string;
     league: string;
@@ -10,7 +12,7 @@ export interface Certificate {
     members:string[];
 };
 
-export function createCertificate( cert : Certificate) {
+export function createCertificate( cert : Certificate) : ReactNode {
     const templ = (
         <>
             <div className="competition"> 
