@@ -11,7 +11,7 @@ function App() {
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let cert : Certificate|null = null;
-  let icert : Element = (<p>ERROR: Invalid Certificate</p>);
+  let icert : Element|ReactNode = (<p>ERROR: Invalid Certificate</p>);
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
