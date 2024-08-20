@@ -3,26 +3,20 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css'
 import { stringFromBase64URL } from "./base64url";
+import {Certificate, createCertificate} from './Certificate';
 
-interface Certificate {
-    competition: string;
-    league: string;
-    event: string;
-    age: string;
-    team: string;
-    affiliation: string;
-    members:string[];
-};
 
 function App() {
   const [count, setCount] = useState(0)
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let cert : Certificate|null = null;
+  let icert : any = "";
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
     let _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
+
 
     let members = _cert[6].split("\n");
 
@@ -36,7 +30,7 @@ function App() {
         members: members,
     };
 
-    let template = createTemplate(cert.competition);
+    icert = createCertificate(cert);
   }
 
   return (
@@ -44,6 +38,9 @@ function App() {
       <div style={{visibility:"hidden"}}> 
         <p>B64: {b64cert}</p>
         <p>Certificate: {cert.team}</p>
+      </div>
+      <div> 
+        {icert}
       </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
