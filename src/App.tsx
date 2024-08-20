@@ -4,27 +4,46 @@ import viteLogo from '/vite.svg';
 import './App.css'
 import { stringFromBase64URL } from "./base64url";
 
+interface Certificate {
+    competition: string;
+    league: string;
+    event: string;
+    age: string;
+    team: string;
+    affiliation: string;
+    members:string[];
+};
+
 function App() {
   const [count, setCount] = useState(0)
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
-  //let cert : string[] = ["INVALID CERTIFICATE PARAMETERS"];
-  let cert = {
-    'event': '',
-    ''
-  };
+  let cert : Certificate|null = null;
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
     let _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
 
+    let members = _cert[6].split("\n");
+
+    cert = {
+        competition: _cert[0],
+        league: _cert[1],
+        event: _cert[2],
+        age: _cert[3],
+        team: _cert[4],
+        affiliation: _cert[5],
+        members: members,
+    };
+
+    let template = createTemplate(cert.competition);
   }
 
   return (
     <>
-      <div> 
+      <div style={{visibility:"hidden"}}> 
         <p>B64: {b64cert}</p>
-        <p>Cert: {cert}</p>
+        <p>Certificate: {cert.team}</p>
       </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
