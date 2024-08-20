@@ -17,7 +17,7 @@ export function createCertificate( cert : Certificate) {
                 Competition: {cert.competition}
            </div>
             <div className="league"> 
-                Team: {cert.league}-({cert.age})
+                Team: {cert.league} ({cert.age})
            </div>
             <div className="event"> 
                 Team: {cert.event}
