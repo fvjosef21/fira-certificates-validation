@@ -1,7 +1,6 @@
 import './certificate.css';
 import {ReactNode} from 'react';
 
-import React from 'react';
 export interface Certificate {
     competition: string;
     league: string;
