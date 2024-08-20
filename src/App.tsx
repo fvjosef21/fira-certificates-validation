@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import reactLogo from '/assets/react.svg';
+import viteLogo from '/assets/vite.svg';
 import './App.css'
 import { stringFromBase64URL } from "./base64url";
 import {Certificate, createCertificate} from './Certificate';
@@ -11,7 +11,7 @@ function App() {
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let cert : Certificate|null = null;
-  let icert : Element|ReactNode = (<p>ERROR: Invalid Certificate</p>);
+  let icert : ReactNode = (<p>ERROR: Invalid Certificate</p>);
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
