@@ -11,7 +11,7 @@ export interface Certificate {
 };
 
 export function createCertificate( cert : Certificate) {
-    let templ = (
+    const templ = (
         <>
             <div className="competition"> 
                 Competition: {cert.competition}

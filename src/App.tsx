@@ -11,14 +11,14 @@ function App() {
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let cert : Certificate|null = null;
-  let icert : any = "";
+  let icert : string = "";
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
-    let _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
+    const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
 
 
-    let members = _cert[6].split("\n");
+    const members = _cert[6].split("\n");
 
     cert = {
         competition: _cert[0],
