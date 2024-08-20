@@ -11,7 +11,7 @@ function App() {
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let cert : Certificate|null = null;
-  let icert : string = "";
+  let icert : Element = (<p>ERROR: Invalid Certificate</p>);
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
@@ -37,7 +37,9 @@ function App() {
     <>
       <div style={{visibility:"hidden"}}> 
         <p>B64: {b64cert}</p>
-        <p>Certificate: {cert.team}</p>
+        {cert !== null && 
+            <p>Certificate: {cert.team}</p>
+        }
       </div>
       <div> 
         {icert}
