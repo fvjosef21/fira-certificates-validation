@@ -17,17 +17,17 @@ function App() {
     //cert = btoa(cert);
     const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
 
-
-    const members = _cert[6].split("\n");
+    const members = _cert[7].split("\n");
 
     cert = {
-        competition: _cert[0],
-        league: _cert[1],
-        event: _cert[2],
-        age: _cert[3],
-        team: _cert[4],
-        affiliation: _cert[5],
-        members: members,
+      competition: _cert[0],
+      league: _cert[1],
+      event: _cert[2],
+      age: _cert[3],
+      type: _cert[4],
+      team: _cert[5],
+      affiliation: _cert[6],
+      members: members,
     };
 
     icert = createCertificate(cert);
