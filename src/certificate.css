@@ -1,4 +1,52 @@
+.certificate {
+    position: relative;
+    top: 0cm;
+    left: 0cm;
+}
+
 .competition {
     text-align: center;
-    font-size: 32pt;
+    font-size: 64pt;
+    position: absolute;
+    top: 10cm;
+    left: 12cm;
+    width: 3cm;
 }
+
+.league {
+    text-align: center;
+    font-size: 48pt;
+    position: absolute;
+    top: 9cm;
+    left: 24cm;
+    width: 19cm;
+}
+
+.type {
+    text-align: center;
+    font-size: 54pt;
+    position: absolute;
+    top: 14cm;
+    left: 24cm;
+    width: 19cm;
+}
+
+.team {
+    text-align: center;
+    font-size: 36pt;
+    position: absolute;
+    top: 19cm;
+    left: 18cm;
+    width: 30cm;
+}
+
+.memberTableDiv {
+    text-align: center;
+    font-size: 48pt;
+    position: absolute;
+    top: 24cm;
+    left: 29cm;
+    width: 19cm;
+
+}
+
