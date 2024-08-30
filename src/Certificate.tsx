@@ -26,7 +26,7 @@ function background_factory( event: string) {
 }
 
 export function createCertificate( cert : Certificate) : React.ReactNode {
-
+    const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation/";
     const bg = background_factory(cert.competition);
     const s = certificateToString(cert);
     const b = stringToBase64URL(s);
@@ -73,7 +73,7 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
                     <div >
                         <QRCode
                             size={256}
-                            value={s}
+                            value={urlRoot + "?p=" + s}
                             viewBox={`0 0 256 256`}
                         />
                     </div>
