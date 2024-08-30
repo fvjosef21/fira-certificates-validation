@@ -72,9 +72,8 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
                 <div className="qrcode">
                     <div >
                         <QRCode
-                            size={256}
+                            size={280}
                             value={urlRoot + "?p=" + stringToBase64URL(s)}
-                            viewBox={`0 0 256 256`}
                         />
                     </div>
                 </div>
