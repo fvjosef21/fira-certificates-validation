@@ -1,6 +1,8 @@
-import './certificate.css';
-import React from 'react';
+import {ReactNode} from 'react';
+import {QRCode} from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
+import {stringToBase64URL, stringFromBase64URL} from "./base64url";
+import './certificate.css';
 
 export interface Certificate {
     competition: string;
@@ -26,6 +28,10 @@ function background_factory( event: string) {
 export function createCertificate( cert : Certificate) : React.ReactNode {
 
     const bg = background_factory(cert.competition);
+    const s = certificateToString(cert);
+    const b = stringToBase64URL(s);
+
+    console.log(`b=${b}`);
 
     const templ = (
         <>
@@ -63,6 +69,15 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
                         </tbody>
                     </table>
                 </div>
+                <div className="qrcode">
+                    <div >
+                        <QRCode
+                            size={256}
+                            value={s}
+                            viewBox={`0 0 256 256`}
+                        />
+                    </div>
+                </div>
             </div>
         </>
     );
@@ -70,3 +85,49 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
     return templ;
 }
 
+
+export function certificateToString( cert: Certificate ) {
+    const s = `${cert.competition}
+
+${cert.league}
+
+${cert.league}
+
+${cert.event}
+
+${cert.age}
+
+${cert.type}
+
+${cert.team}
+
+${cert.affiliation}
+
+${cert.members.join("\n" )}`;
+
+    return s;
+}
+
+export function certificateFromQuery( b64cert: string ) {
+    const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
+    let icert : ReactNode | null = null;
+
+    if (_cert.length === 8) {
+        const members = _cert[7].split("\n");
+
+        const cert = {
+          competition: _cert[0],
+          league: _cert[1],
+          event: _cert[2],
+          age: _cert[3],
+          type: _cert[4],
+          team: _cert[5],
+          affiliation: _cert[6],
+          members: members,
+        };
+
+        icert = createCertificate(cert);
+    }
+
+    return icert;
+}
