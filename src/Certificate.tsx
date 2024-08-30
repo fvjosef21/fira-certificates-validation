@@ -90,8 +90,6 @@ export function certificateToString( cert: Certificate ) {
 
 ${cert.league}
 
-${cert.league}
-
 ${cert.event}
 
 ${cert.age}
