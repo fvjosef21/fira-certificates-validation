@@ -1,12 +1,9 @@
-import { useState, ReactNode } from 'react';
-import reactLogo from '/assets/react.svg';
-import viteLogo from '/assets/vite.svg';
+import { ReactNode } from 'react';
 import './App.css'
-import {Certificate, certificateFromQuery} from './Certificate';
+import {certificateFromQuery} from './Certificate';
 
 
 function App() {
-  const [count, setCount] = useState(0)
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
   let icert : ReactNode = <div className="certificateError">
@@ -26,9 +23,6 @@ function App() {
     <>
       <div style={{visibility:"hidden"}}> 
         <p>B64: {b64cert}</p>
-        {cert !== null && 
-            <p>Certificate: {cert.team}</p>
-        }
       </div>
       <div> 
         {icert}
