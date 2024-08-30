@@ -58,8 +58,8 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
                         <tbody> 
                             {cert.members.map(
                                     (mem,i) => (
-                                        <tr className="memberTableRow" key={"row"+i}>
-                                            <td className="memberTableCell key={"cell"+i}"> 
+                                        <tr className="memberTableRow" key={i}>
+                                            <td className="memberTableCell key={i}"> 
                                                 {mem}
                                             </td>
                                         </tr> 
