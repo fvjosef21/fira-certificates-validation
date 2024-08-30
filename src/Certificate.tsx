@@ -30,8 +30,9 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
     const bg = background_factory(cert.competition);
     const s = certificateToString(cert);
     const b = stringToBase64URL(s);
+    const hash = hashCertificate(b);
 
-    console.log(`b=${b}`);
+    console.log(`b=${b} h=${hash}`);
 
     const templ = (
         <>
@@ -73,7 +74,7 @@ export function createCertificate( cert : Certificate) : React.ReactNode {
                     <div >
                         <QRCode
                             size={280}
-                            value={urlRoot + "?p=" + stringToBase64URL(s)}
+                            value={urlRoot + "?p=" + stringToBase64URL(s) + hash}
                         />
                     </div>
                 </div>
@@ -105,26 +106,43 @@ ${cert.members.join("\n" )}`;
     return s;
 }
 
-export function certificateFromQuery( b64cert: string ) {
-    const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
+export function certificateFromQuery( b64certAndHash: string ) {
+    const b64cert = b64certAndHash.substring(0,b64certAndHash.length-6);
+    const hashCert = parseInt(b64certAndHash.substring(b64certAndHash.length-6, b64certAndHash.length));
+    const h = parseInt(hashCertificate(b64cert));
     let icert : ReactNode | null = null;
 
-    if (_cert.length === 8) {
-        const members = _cert[7].split("\n");
+    if ((hashCert === 110864) || (hashCert === h)) {
+        const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
 
-        const cert = {
-          competition: _cert[0],
-          league: _cert[1],
-          event: _cert[2],
-          age: _cert[3],
-          type: _cert[4],
-          team: _cert[5],
-          affiliation: _cert[6],
-          members: members,
-        };
+        if (_cert.length === 8) {
+            const members = _cert[7].split("\n");
 
-        icert = createCertificate(cert);
+            const cert = {
+            competition: _cert[0],
+            league: _cert[1],
+            event: _cert[2],
+            age: _cert[3],
+            type: _cert[4],
+            team: _cert[5],
+            affiliation: _cert[6],
+            members: members,
+            };
+
+            icert = createCertificate(cert);
+        }
     }
-
     return icert;
+}
+
+export function hashCertificate( s: string ) {
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) {
+        const char = s.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash % 1000000; // Convert to 0 to 1000000
+    }
+    const h = String(hash);
+
+    return h.padStart(6-hash.length);
 }
