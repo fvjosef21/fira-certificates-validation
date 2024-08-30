@@ -5,6 +5,12 @@
   text-align: center;
 }
 
+.certificateError {
+  color: red;
+  font-size: 128pt;
+  background-color: beige;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

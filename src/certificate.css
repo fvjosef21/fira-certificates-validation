@@ -47,6 +47,17 @@
     top: 24cm;
     left: 29cm;
     width: 19cm;
+}
 
+.qrcode {
+    width: 256;
+    height: 256;
+    margin: 0 auto;
+    max-width: 320;
+    position: absolute;
+    top: 27cm;
+    left: 9cm;
+    background: whitesmoke;
+    padding: 16px;
 }
 
