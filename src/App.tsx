@@ -9,7 +9,6 @@ function App() {
   let icert : ReactNode = <div className="certificateError">
     <p>ERROR: Invalid Certificate</p>
   </div>;
-  let cert : String | null = null;
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
