@@ -144,5 +144,5 @@ export function hashCertificate( s: string ) {
     }
     const h = String(hash);
 
-    return h.padStart(6-hash.length);
+    return h.padStart(6-h.length);
 }
