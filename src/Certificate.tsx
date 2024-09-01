@@ -130,7 +130,7 @@ export async function certificateFromQuery( b64certAndHash: string ) {
             members: members,
             };
 
-            icert = createCertificate(cert);
+            icert = await createCertificate(cert);
         }
     }
     return icert;
