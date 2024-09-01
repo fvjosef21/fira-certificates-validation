@@ -25,7 +25,7 @@ function background_factory( event: string) {
     return bg;
 }
 
-export async function createCertificate( cert : Certificate) : React.ReactNode {
+export async function createCertificate( cert : Certificate) {
     const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation/";
     const bg = background_factory(cert.competition);
     const s = certificateToString(cert);
