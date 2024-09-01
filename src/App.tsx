@@ -1,21 +1,25 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import './App.css'
 import {certificateFromQuery} from './Certificate';
 
 
 function App() {
+  const loading : ReactNode = <><div>Loading</div></>
+  const [icert, setICert] = useState<ReactNode>(loading);
   const searchParams = new URLSearchParams(document.location.search);
   const b64cert:string|null = searchParams.get('p');
-  let icert : ReactNode = <div className="certificateError">
-    <p>ERROR: Invalid Certificate</p>
-  </div>;
 
   if (b64cert !== null ) {
     //cert = btoa(cert);
-    const _icert = certificateFromQuery(b64cert);
-    if (_icert !== null) {
-      icert = _icert;
-    }
+    certificateFromQuery(b64cert).then((_icert) => {
+      if (_icert !== null) {
+        setICert(_icert);
+      } else {
+        setICert( <div className="certificateError">
+          <p>ERROR: Invalid Certificate</p>
+        </div>);
+      }
+    });
   }
 
   return (

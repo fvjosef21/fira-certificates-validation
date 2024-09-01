@@ -3,6 +3,7 @@ import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
 import './certificate.css';
+import * as crypto from 'crypto';
 
 export interface Certificate {
     competition: string;
@@ -25,12 +26,12 @@ function background_factory( event: string) {
     return bg;
 }
 
-export function createCertificate( cert : Certificate) : React.ReactNode {
+export async function createCertificate( cert : Certificate) : React.ReactNode {
     const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation/";
     const bg = background_factory(cert.competition);
     const s = certificateToString(cert);
     const b = stringToBase64URL(s);
-    const hash = hashCertificate(b);
+    const hash = await hashCertificate(b);
 
     console.log(`b=${b} h=${hash}`);
 
@@ -106,13 +107,14 @@ ${cert.members.join("\n" )}`;
     return s;
 }
 
-export function certificateFromQuery( b64certAndHash: string ) {
-    const b64cert = b64certAndHash.substring(0,b64certAndHash.length-6);
-    const hashCert = parseInt(b64certAndHash.substring(b64certAndHash.length-6, b64certAndHash.length));
-    const h = parseInt(hashCertificate(b64cert));
+export async function certificateFromQuery( b64certAndHash: string ) {
+    const HASH_LENGTH= 32*2; // 32 hex chars
+    const b64cert = b64certAndHash.substring(0,b64certAndHash.length-HASH_LENGTH);
+    const hashCert = b64certAndHash.substring(b64certAndHash.length-HASH_LENGTH, b64certAndHash.length);
+    const h = await hashCertificate(b64cert);
     let icert : ReactNode | null = null;
 
-    if ((hashCert === 110864) || (hashCert === h)) {
+    if (hashCert === h) {
         const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
 
         if (_cert.length === 8) {
@@ -135,14 +137,13 @@ export function certificateFromQuery( b64certAndHash: string ) {
     return icert;
 }
 
-export function hashCertificate( s: string ) {
-    let hash = 0;
-    for (let i = 0; i < s.length; i++) {
-        const char = s.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash % 1000000; // Convert to 0 to 1000000
-    }
-    const h = String(hash);
-
-    return h.padStart(6-h.length);
+async function hashCertificate( s: string ) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(s);
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join(""); // convert bytes to hex string
+    return hashHex;
 }
