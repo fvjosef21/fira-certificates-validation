@@ -18,11 +18,11 @@ export function CSVUploader( {loader}: CSVUploaderProps) {
       reader.onload = (event) => {
         const csvOutput : string | null = event.target!.result as string;
         if (csvOutput !== null) {
-            const json = csv2json(csvOutput)
-            console.log(`handleFileUpload: ${json}`); // You can process the CSV data here    
-            if (loader !== undefined) {
-                loader(json);
-            }
+          const json = csv2json(csvOutput.replace('\r\n', '\n'), {'delimiter': {'eol': '\n'},'trimFieldValues': true});
+          console.log(`handleFileUpload: ${json}`); // You can process the CSV data here    
+          if (loader !== undefined) {
+              loader(json);
+          }
         }
         
       };
@@ -33,7 +33,8 @@ export function CSVUploader( {loader}: CSVUploaderProps) {
   return (
     <div className="csvUploader">
       <h1>Upload CSV File</h1>
-      <input type="file" accept=".csv" onChange={handleFileChange} />
+      <label htmlFor="fileSelectorId">Select File</label> 
+      <input id="fileSelectorId" type="file" accept=".csv" onChange={handleFileChange} />
       <button onClick={handleFileUpload}>Upload</button>
     </div>
   );
