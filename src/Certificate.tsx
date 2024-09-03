@@ -15,6 +15,8 @@ export interface Certificate {
     members:string[];
 };
 
+export type CertificatesLoader = (a: object[]) => void;
+
 function background_factory( event: string) {
     let bg = null;
 
