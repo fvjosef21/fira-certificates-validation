@@ -40,7 +40,7 @@ export function CreationApp() {
     const certURLs : string[] = [];
 
     for(let c of certificates) {
-      const urlRoot = window.location.href.toString();
+      //const urlRoot = window.location.href.toString();
       console.log(`urlRoot ${urlRoot}`);
 
       const s = await createCertificateURL(c, privateKey, urlRoot);
