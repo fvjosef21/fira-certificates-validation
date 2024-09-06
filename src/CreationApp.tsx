@@ -126,6 +126,16 @@ export function CreationApp() {
       </div>
 
       <div className="uploader">
+        <div>
+          <p>The format of the CSV file should be as follows:</p>
+          <code>
+            <pre>
+competition,league,event,age,type,team,affiliation,members
+FIRA 2024,Autonomous Car,Race, Pro,1st Place,NTNU-ERC,National Taiwan Normal University,Wei-Jen Tsai;Jacky Baltes
+            </pre>
+          </code>
+          <p>Note team members should be seperated by ";"</p>
+        </div>
         <CSVUploader loader={jsonLoader} />
       </div>
 
