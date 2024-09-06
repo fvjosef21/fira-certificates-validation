@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
-import {stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64, arrayBufferToHex} from './arraybuffer_utils';
+import {stringToArrayBuffer, arrayBufferToBase64, arrayBufferToHex} from './arraybuffer_utils';
 import './certificate.css';
 
 export interface Certificate {
