@@ -118,7 +118,7 @@ export async function certificateFromQuery( b64cert: ArrayBuffer ) {
         const s = stringFromBase64URL(b64);
         const cert = JSON.parse(s);
         icert = await createCertificate(cert);
-    } catch () {
+    } catch {
         icert = null;
     }
     
