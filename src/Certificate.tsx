@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
-import {base64ToArrayBuffer, stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64} from './arraybuffer_utils';
+import {stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64} from './arraybuffer_utils';
 import './certificate.css';
 
 export interface Certificate {
@@ -118,7 +118,7 @@ export async function certificateFromQuery( b64cert: ArrayBuffer ) {
         const s = stringFromBase64URL(b64);
         const cert = JSON.parse(s);
         icert = await createCertificate(cert);
-    } catch (e:Exception) {
+    } catch () {
         icert = null;
     }
     

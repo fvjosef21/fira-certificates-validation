@@ -3,7 +3,7 @@ import {certificateFromQuery} from './Certificate';
 import { base64ToArrayBuffer } from './arraybuffer_utils';
 
 export function ValidationApp() {
-  const loading : ReactNode = <><div>Loading</div></>
+  //const loading : ReactNode = <><div>Loading</div></>
   const [icert, setICert] = useState<ReactNode>();
   const [publicKey, setPublicKey] = useState<CryptoKey>();
 

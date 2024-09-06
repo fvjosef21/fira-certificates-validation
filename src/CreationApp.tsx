@@ -1,8 +1,7 @@
 import './CreationApp.css'
 import { CSVUploader } from './CSVUploader';
 import { useState, useRef, ReactNode } from 'react';
-import { Certificate, CertificatesLoader, createCertificate, createCertificateURL} from './Certificate';
-import {stringToBase64URL, stringFromBase64URL} from "./base64url";
+import { Certificate, createCertificate, createCertificateURL} from './Certificate';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './arraybuffer_utils';
 
 export function CreationApp() {
@@ -15,7 +14,7 @@ export function CreationApp() {
   const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation";
   const testPrivateKey = "MC4CAQAwBQYDK2VwBCIEIKPF19ZmsAH5SlKKr9nwnmBSvrY2PBAPjGoi7POYkFe5";
 
-  function jsonLoader(certs_in: Object[]) {
+  function jsonLoader(certs_in: object[]) {
     console.log(`Loaded json ${JSON.stringify(certs_in)}`);
     const certs = certs_in.map((o) => {
       const c = o as Certificate;
@@ -39,7 +38,7 @@ export function CreationApp() {
   async function createCertificatesURLs(certificates: Certificate[], privateKey: CryptoKey) {
     const certURLs : string[] = [];
 
-    for(let c of certificates) {
+    for(const c of certificates) {
       //const urlRoot = window.location.href.toString();
       console.log(`urlRoot ${urlRoot}`);
 
@@ -59,7 +58,7 @@ export function CreationApp() {
   async function createCertificateSamples(certificates: Certificate[]) {
     const selected = getRandomElements(certificates, Math.min(certificates.length, 3));
     const sampleCertificates: ReactNode[] = Array<ReactNode>();
-    for (let c of selected) {
+    for (const c of selected) {
       const t = await createCertificate(c);
       sampleCertificates.push(t);
     }
