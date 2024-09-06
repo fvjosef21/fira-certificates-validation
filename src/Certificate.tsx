@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
-import {stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64} from './arraybuffer_utils';
+import {stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64, arrayBufferToHex} from './arraybuffer_utils';
 import './certificate.css';
 
 export interface Certificate {
@@ -30,11 +30,11 @@ function background_factory( event: string) {
 
 export async function createCertificateURLData( cert: Certificate, privateKey: CryptoKey ) {
     const s = certificateToString(cert);
-    const buffer = stringToArrayBuffer(s);
+    
+    const signed = await window.crypto.subtle.sign( {name: "Ed25519"}, privateKey, stringToArrayBuffer(s));
+    const signedHex = arrayBufferToHex(signed);
 
-    const signed = await window.crypto.subtle.sign( {name: "Ed25519"}, privateKey, buffer);
-
-    const data = concatenateArrayBuffers(buffer, signed);
+    const data = stringToArrayBuffer(s + signedHex);
     return data;
 }
 

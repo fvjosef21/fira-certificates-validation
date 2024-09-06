@@ -45,4 +45,26 @@ export function concatenateArrayBuffers(buffer1: ArrayBuffer, buffer2: ArrayBuff
     return combined.buffer;
 }
 
+const byteToHex : string[] = [];
+
+for (let n = 0; n <= 0xff; ++n)
+{
+    const hexOctet = n.toString(16).padStart(2, "0");
+    byteToHex.push(hexOctet);
+}
+
+export function arrayBufferToHex(arrayBuffer:ArrayBuffer) : string
+{
+    const buff = new Uint8Array(arrayBuffer);
+    const hexOctets = []; // new Array(buff.length) is even faster (preallocates necessary array size), then use hexOctets[i] instead of .push()
+
+    for (let i = 0; i < buff.length; ++i)
+        hexOctets.push(byteToHex[buff[i]]);
+
+    return hexOctets.join("");
+}
+
+export function hexToArrayBuffer( hexString: string) {
+    return Uint8Array.from(hexString.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)));
+}
 

@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import {certificateFromQuery} from './Certificate';
-import { base64ToArrayBuffer } from './arraybuffer_utils';
+import { arrayBufferToString, base64ToArrayBuffer, hexToArrayBuffer } from './arraybuffer_utils';
 
 export function ValidationApp() {
   //const loading : ReactNode = <><div>Loading</div></>
@@ -27,8 +27,8 @@ export function ValidationApp() {
   if (b64cert !== null ) {
     //cert = btoa(cert);
     const ab = base64ToArrayBuffer(b64cert);
-    const certData = ab.slice(0,ab.byteLength-keyLength);
-    const certSignature = ab.slice(ab.byteLength-keyLength, ab.byteLength);
+    const certData = ab.slice(0,ab.byteLength-keyLength*2);
+    const certSignature = hexToArrayBuffer(arrayBufferToString(ab.slice(ab.byteLength-keyLength*2, ab.byteLength)));
 
     if (publicKey !== undefined) {
       window.crypto.subtle.verify({name: "Ed25519"}, publicKey, certSignature, certData).then( (valid) => {
