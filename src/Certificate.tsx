@@ -2,6 +2,7 @@ import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
+import {base64ToArrayBuffer, stringToArrayBuffer, concatenateArrayBuffers, arrayBufferToBase64} from './arraybuffer_utils';
 import './certificate.css';
 
 export interface Certificate {
@@ -25,6 +26,22 @@ function background_factory( event: string) {
     }
 
     return bg;
+}
+
+export async function createCertificateURLData( cert: Certificate, privateKey: CryptoKey ) {
+    const s = certificateToString(cert);
+    const buffer = stringToArrayBuffer(s);
+
+    const signed = await window.crypto.subtle.sign( {name: "Ed25519"}, privateKey, buffer);
+
+    const data = concatenateArrayBuffers(buffer, signed);
+    return data;
+}
+
+export async function createCertificateURL( cert: Certificate, privateKey: CryptoKey, urlRoot : string) {
+    const d = await createCertificateURLData(cert, privateKey);
+
+    return `${urlRoot}?p=${arrayBufferToBase64(d)}`;
 }
 
 export async function createCertificate( cert : Certificate) {
@@ -89,52 +106,22 @@ export async function createCertificate( cert : Certificate) {
 
 
 export function certificateToString( cert: Certificate ) {
-    const s = `${cert.competition}
-
-${cert.league}
-
-${cert.event}
-
-${cert.age}
-
-${cert.type}
-
-${cert.team}
-
-${cert.affiliation}
-
-${cert.members.join("\n" )}`;
-
+    const s = JSON.stringify(cert);
     return s;
 }
 
-export async function certificateFromQuery( b64certAndHash: string ) {
-    const HASH_LENGTH= 32*2; // 32 hex chars
-    const b64cert = b64certAndHash.substring(0,b64certAndHash.length-HASH_LENGTH);
-    const hashCert = b64certAndHash.substring(b64certAndHash.length-HASH_LENGTH, b64certAndHash.length);
-    const h = await hashCertificate(b64cert);
+export async function certificateFromQuery( b64cert: ArrayBuffer ) {
     let icert : ReactNode | null = null;
 
-    if (hashCert === h) {
-        const _cert = stringFromBase64URL(b64cert).replace(/\r\n/g, "\n").split('\n\n');
-
-        if (_cert.length === 8) {
-            const members = _cert[7].split("\n");
-
-            const cert = {
-            competition: _cert[0],
-            league: _cert[1],
-            event: _cert[2],
-            age: _cert[3],
-            type: _cert[4],
-            team: _cert[5],
-            affiliation: _cert[6],
-            members: members,
-            };
-
-            icert = await createCertificate(cert);
-        }
+    try {
+        const b64 = arrayBufferToBase64(b64cert);
+        const s = stringFromBase64URL(b64);
+        const cert = JSON.parse(s);
+        icert = await createCertificate(cert);
+    } catch (e:Exception) {
+        icert = null;
     }
+    
     return icert;
 }
 
