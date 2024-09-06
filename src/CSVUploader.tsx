@@ -7,9 +7,14 @@ export interface CSVUploaderProps {
 }
 
 export function CSVUploader( {loader}: CSVUploaderProps) {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File>(null);
   const handleFileChange = (e:Event) => {
-    setFile(e.target.files[0]);
+    const inpElement = e.target as HTMLInputElement;
+
+    if ((inpElement !== null) && (inpElement!.files) && (inpElement!.files![0] !== null)) {
+      setFile(inpElement!.files![0]);
+    }
+    
   };
 
   const handleFileUpload = () => {

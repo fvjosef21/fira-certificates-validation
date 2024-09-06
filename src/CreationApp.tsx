@@ -18,7 +18,7 @@ export function CreationApp() {
     console.log(`Loaded json ${JSON.stringify(certs_in)}`);
     const certs = certs_in.map((o) => {
       const c = o as Certificate;
-      c['members'] = c['members'].split(';');
+      //c['members'] = c['members'].split(';');
       return c;
     });
 

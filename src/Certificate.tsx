@@ -13,7 +13,7 @@ export interface Certificate {
     type: string;
     team: string;
     affiliation: string;
-    members:string[];
+    members:string;
 };
 
 export type CertificatesLoader = (a: object[]) => void;
@@ -76,7 +76,7 @@ export async function createCertificate( cert : Certificate) {
                 <div className="memberTableDiv">
                     <table> 
                         <tbody> 
-                            {cert.members.map(
+                            {cert.members.split(';').map(
                                     (mem,i) => (
                                         <tr className="memberTableRow" key={i}>
                                             <td className="memberTableCell key={i}"> 
