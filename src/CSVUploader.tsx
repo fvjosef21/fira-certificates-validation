@@ -1,18 +1,18 @@
 import {useState } from 'react';
 import {csv2json} from 'json-2-csv';
 import {CertificatesLoader} from './Certificate';
-
+import {ChangeEventHandler} from 'react';
 export interface CSVUploaderProps {
     loader: CertificatesLoader;
 }
 
 export function CSVUploader( {loader}: CSVUploaderProps) {
   const [file, setFile] = useState<File>(null);
-  const handleFileChange = (e:Event) => {
+  const handleFileChange : ChangeEventHandler<HTMLInputElement> = (e:Event) => {
     const inpElement = e.target as HTMLInputElement;
 
     if ((inpElement !== null) && (inpElement!.files) && (inpElement!.files![0] !== null)) {
-      setFile(inpElement!.files![0]);
+      setFile(inpElement!.files![0]!);
     }
     
   };
