@@ -1,9 +1,24 @@
 import {useState } from 'react';
-import {csv2json} from 'json-2-csv';
+import {csv2json, json2csv} from 'json-2-csv';
 import {CertificatesLoader} from './Certificate';
 import {ChangeEventHandler, ChangeEvent} from 'react';
 export interface CSVUploaderProps {
     loader: CertificatesLoader;
+}
+
+export function downloadCSV( filename: string, data:object[]) {
+  const s = json2csv(data);
+
+  downloadFile(s, filename, "text/csv");
+}
+
+function downloadFile(content: string, fileName: string, contentType: string) {
+  const a = document.createElement('a');
+  const file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 export function CSVUploader( {loader}: CSVUploaderProps) {
@@ -39,6 +54,7 @@ export function CSVUploader( {loader}: CSVUploaderProps) {
   return (
     <div className="csvUploader">
       <h1>Upload CSV File</h1>
+      
       <label htmlFor="fileSelectorId">Select File</label> 
       <input id="fileSelectorId" type="file" accept=".csv" onChange={handleFileChange} />
       <button onClick={handleFileUpload}>Upload</button>

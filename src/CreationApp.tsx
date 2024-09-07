@@ -1,5 +1,5 @@
 import './CreationApp.css'
-import {CSVUploader} from './CSVUploader';
+import {CSVUploader, downloadCSV} from './CSVUploader';
 import {useState, useRef} from 'react';
 import {CertificateInfo, Certificate, createCertificate, createCertificateURL} from './Certificate';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './arraybuffer_utils';
@@ -39,6 +39,23 @@ export function CreationApp() {
             _certificateInfos.push(ci);
             if (_certificateInfos.length === certs.length) {
               setCertificateInfos(_certificateInfos);
+
+              const data = _certificateInfos.map( (mem,i) => {
+                const rec = { 
+                  competition: mem.cert.competition,
+                  league: mem.cert.league,
+                  event: mem.cert.event,
+                  age: mem.cert.age,
+                  type: mem.cert.type,
+                  team: mem.cert.team,
+                  affiliation: mem.cert.affiliation,
+                  members: mem.cert.members,
+                  url: mem.url 
+                };
+                return rec;
+              });
+
+              downloadCSV("new_certificates.csv", data);
             }
           });
         });
