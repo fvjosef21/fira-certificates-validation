@@ -1,4 +1,4 @@
-import {ReactNode, useState} from 'react';
+import {useState} from 'react';
 import {CertificateInfo, splitCertificateParam, certificateFromURL} from './Certificate';
 import {base64ToArrayBuffer} from './arraybuffer_utils';
 
