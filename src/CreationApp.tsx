@@ -1,17 +1,17 @@
 import './CreationApp.css'
 import { CSVUploader } from './CSVUploader';
 import { useState, useRef, ReactNode } from 'react';
-import { Certificate, createCertificate, createCertificateURL} from './Certificate';
+import { CertificateInfo, Certificate, createCertificate, createCertificateURL} from './Certificate';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './arraybuffer_utils';
 
 export function CreationApp() {
-  const [certificates, setCertificates] = useState<Certificate[]>();
-  const [samples, setSamples] = useState<ReactNode[]>();
+  const [certificateInfos, setCertificateInfos] = useState<CertificateInfo[]>();
+  const [samples, setSamples] = useState<CertificateInfo[]>();
   const [privateKey, setPrivateKey] = useState<CryptoKey>();
   const privateKeyInputRef  = useRef<HTMLInputElement>(null);
-  const [certURLs, setCertURLs] = useState<string[]>();
 
-  const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation";
+  //const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation";
+  const urlRoot = "http://localhost:5173/fira-certificates-validation/";
   const testPrivateKey = "MC4CAQAwBQYDK2VwBCIEIKPF19ZmsAH5SlKKr9nwnmBSvrY2PBAPjGoi7POYkFe5";
 
   function jsonLoader(certs_in: object[]) {
@@ -22,30 +22,50 @@ export function CreationApp() {
       return c;
     });
 
-    setCertificates(certs);
+    if (privateKey !== undefined) {
+      const _certificateInfos : CertificateInfo[] = Array<CertificateInfo>();
 
-    if ((certificates !== undefined) && (privateKey !== undefined) ) {
-      createCertificatesURLs(certificates, privateKey).then( (urls) => {
-        setCertURLs(urls);
-      });
+      for(const cert of certs) {
+        createCertificateURL(cert, privateKey, urlRoot).then( (url) => {
+          createCertificate(cert, url).then( (ci) => {
+            _certificateInfos.push(ci);
+            if (_certificateInfos.length === certs.length) {
+              setCertificateInfos(_certificateInfos);
+            }
+          });
+        });
+
+      }  
     }
+    // setCertificates(certs);
 
-    createCertificateSamples(certs).then((samples) => {
-      setSamples(samples);
+    // if ((certificates !== undefined) && (privateKey !== undefined) ) {
+    //   createCertificatesURLs(certificates, privateKey).then( (urls) => {
+    //     setCertURLs(urls);
+    //   });
+    // }
+  }
+
+  if (privateKey === undefined) {
+    window.crypto.subtle.importKey("pkcs8", 
+      base64ToArrayBuffer(testPrivateKey),
+      { name: 'Ed25519' },
+      false,
+      [ "sign"]
+    ).then((key) => {
+      console.log(`Private Key: ${key}`);
+      setPrivateKey(key);
+
+      if (privateKeyInputRef.current !== null) {
+        privateKeyInputRef.current.value = testPrivateKey;
+      }
     });
   }
 
-  async function createCertificatesURLs(certificates: Certificate[], privateKey: CryptoKey) {
-    const certURLs : string[] = [];
-
-    for(const c of certificates) {
-      //const urlRoot = window.location.href.toString();
-      console.log(`urlRoot ${urlRoot}`);
-
-      const s = await createCertificateURL(c, privateKey, urlRoot);
-      certURLs.push(s)
-    }
-    return certURLs;
+  if ((certificateInfos !== undefined) && (samples === undefined)){
+    createCertificateSamples(certificateInfos).then((samples) => {
+      setSamples(samples);
+    });
   }
 
   function getRandomElements<T>(arr: T[], n: number): T[] {
@@ -55,14 +75,13 @@ export function CreationApp() {
     return shuffled.slice(0, n);
   }
 
-  async function createCertificateSamples(certificates: Certificate[]) {
-    const selected = getRandomElements(certificates, Math.min(certificates.length, 3));
-    const sampleCertificates: ReactNode[] = Array<ReactNode>();
+  async function createCertificateSamples(certificateInfos: CertificateInfo[]) {
+    const selected = getRandomElements(certificateInfos, Math.min(certificateInfos.length, 3));
+    const samples: CertificateInfo[] = Array<CertificateInfo>();
     for (const c of selected) {
-      const t = await createCertificate(c);
-      sampleCertificates.push(t);
+      samples.push(c);
     }
-    return sampleCertificates;
+    return samples;
   }
 
   window.crypto.subtle.generateKey(
@@ -100,22 +119,6 @@ export function CreationApp() {
     });
   });  
 
-  if (privateKey === undefined) {
-    window.crypto.subtle.importKey("pkcs8", 
-      base64ToArrayBuffer(testPrivateKey),
-      { name: 'Ed25519' },
-      false,
-      [ "sign"]
-    ).then((key) => {
-      console.log(`Private Key: ${key}`);
-      setPrivateKey(key);
-
-      if (privateKeyInputRef.current !== null) {
-        privateKeyInputRef.current.value = testPrivateKey;
-      }
-    });
-  }
-
   return (
     <>
       <h1>FIRA Certifcation Creation</h1>
@@ -131,7 +134,6 @@ export function CreationApp() {
           <code>
             <pre>
 competition,league,event,age,type,team,affiliation,members
-FIRA 2024,Autonomous Car,Race, Pro,1st Place,NTNU-ERC,National Taiwan Normal University,Wei-Jen Tsai;Jacky Baltes
             </pre>
           </code>
           <p>Note team members should be seperated by ";"</p>
@@ -139,16 +141,16 @@ FIRA 2024,Autonomous Car,Race, Pro,1st Place,NTNU-ERC,National Taiwan Normal Uni
         <CSVUploader loader={jsonLoader} />
       </div>
 
-      {certURLs &&
+      {certificateInfos &&
         <div className="urlTable">
           <h2>Certificate URLs</h2>
           <table>
             <tbody>
               {
-                certURLs.map((mem, i) => (
+                certificateInfos.map((mem, i) => (
                   <tr className="urlTableRow" key={i}>
                     <td className="urlCell" key={i}>
-                      <a href={mem}>{mem}</a>
+                      <a href={mem['url']}>{mem['url']}</a>
                     </td>
                   </tr>
                 ))
@@ -166,7 +168,7 @@ FIRA 2024,Autonomous Car,Race, Pro,1st Place,NTNU-ERC,National Taiwan Normal Uni
                 samples.map((mem, i) => (
                   <tr className="certificatesTableRow" key={i}>
                     <td className="certificatesCell key={i}">
-                      {mem};
+                      {mem['node']};
                     </td>
                   </tr>
                 ))

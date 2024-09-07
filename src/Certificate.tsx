@@ -2,7 +2,7 @@ import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringToBase64URL, stringFromBase64URL} from "./base64url";
-import {stringToArrayBuffer, arrayBufferToBase64, arrayBufferToHex} from './arraybuffer_utils';
+import {stringToArrayBuffer, base64ToArrayBuffer, arrayBufferToBase64, arrayBufferToString, hexToArrayBuffer, arrayBufferToHex} from './arraybuffer_utils';
 import './certificate.css';
 
 export interface Certificate {
@@ -15,6 +15,12 @@ export interface Certificate {
     affiliation: string;
     members:string;
 };
+
+export type CertificateInfo = {
+    cert: Certificate;
+    node: ReactNode;
+    url: string;
+};  
 
 export type CertificatesLoader = (a: object[]) => void;
 
@@ -44,14 +50,8 @@ export async function createCertificateURL( cert: Certificate, privateKey: Crypt
     return `${urlRoot}?p=${arrayBufferToBase64(d)}`;
 }
 
-export async function createCertificate( cert : Certificate) {
-    const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation/";
+export async function createCertificate( cert : Certificate, certURL: string) : Promise<CertificateInfo> {
     const bg = background_factory(cert.competition);
-    const s = certificateToString(cert);
-    const b = stringToBase64URL(s);
-    const hash = await hashCertificate(b);
-
-    console.log(`b=${b} h=${hash}`);
 
     const templ = (
         <>
@@ -93,7 +93,7 @@ export async function createCertificate( cert : Certificate) {
                     <div >
                         <QRCode
                             size={280}
-                            value={urlRoot + "?p=" + stringToBase64URL(s) + hash}
+                            value={certURL}
                         />
                     </div>
                 </div>
@@ -101,7 +101,7 @@ export async function createCertificate( cert : Certificate) {
         </>
     );
 
-    return templ;
+    return { 'cert': cert, 'node': templ, 'url': certURL};
 }
 
 
@@ -110,14 +110,15 @@ export function certificateToString( cert: Certificate ) {
     return s;
 }
 
-export async function certificateFromQuery( b64cert: ArrayBuffer ) {
+
+export async function certificateFromQuery(abCert: ArrayBuffer) {
     let icert : ReactNode | null = null;
 
     try {
-        const b64 = arrayBufferToBase64(b64cert);
+        const b64 = arrayBufferToBase64(abCert);
         const s = stringFromBase64URL(b64);
         const cert = JSON.parse(s);
-        icert = await createCertificate(cert);
+        icert = await createCertificate(cert, certURL);
     } catch {
         icert = null;
     }
@@ -134,4 +135,35 @@ async function hashCertificate( s: string ) {
         .map((b) => b.toString(16).padStart(2, "0"))
         .join(""); // convert bytes to hex string
     return hashHex;
+}
+
+export function splitCertificateParam( ab: ArrayBuffer, keyLength = 64) {
+    const certData = ab.slice(0,ab.byteLength-keyLength*2);
+    const certSignature = hexToArrayBuffer(arrayBufferToString(ab.slice(ab.byteLength-keyLength*2, ab.byteLength)));
+
+    return [certData, certSignature];
+}
+
+export async function certificateFromURL(url:string, keyLength = 64) : Promise<CertificateInfo|null> {
+    const searchParams = new URLSearchParams(url.split('?')[1]);
+    const b64cert:string|null = searchParams.get('p');
+
+    let certInfo : CertificateInfo | null = null;
+
+    if (b64cert !== null ) {
+        //cert = btoa(cert);
+        const ab = base64ToArrayBuffer(b64cert);
+      
+        const [certData, _] = splitCertificateParam(ab, keyLength);
+  
+
+        try {
+            const certJSON = JSON.parse(arrayBufferToString(certData));
+            certInfo = await createCertificate(certJSON, url);
+            
+        } catch {
+            certInfo = null;
+        }
+    }
+    return certInfo;
 }
