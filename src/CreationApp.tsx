@@ -10,8 +10,16 @@ export function CreationApp() {
   const [privateKey, setPrivateKey] = useState<CryptoKey>();
   const privateKeyInputRef  = useRef<HTMLInputElement>(null);
 
-  //const urlRoot = "https://fvjosef21.github.io/fira-certificates-validation";
-  const urlRoot = "http://localhost:5173/fira-certificates-validation/";
+  let urlRoot : string;
+
+  console.log(`window.location.host ${window.location.host}`);
+
+  if (window.location.host.substring(0,"localhost".length) !== "localhost") {
+    host = "https://fvjosef21.github.io/fira-certificates-validation/";
+  } else {
+    urlRoot = window.location.toString();
+  }
+
   const testPrivateKey = "MC4CAQAwBQYDK2VwBCIEIKPF19ZmsAH5SlKKr9nwnmBSvrY2PBAPjGoi7POYkFe5";
 
   function jsonLoader(certs_in: object[]) {
