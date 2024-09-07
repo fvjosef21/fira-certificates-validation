@@ -1,7 +1,7 @@
 import './CreationApp.css'
-import { CSVUploader } from './CSVUploader';
-import { useState, useRef, ReactNode } from 'react';
-import { CertificateInfo, Certificate, createCertificate, createCertificateURL} from './Certificate';
+import {CSVUploader} from './CSVUploader';
+import {useState, useRef} from 'react';
+import {CertificateInfo, Certificate, createCertificate, createCertificateURL} from './Certificate';
 import {arrayBufferToBase64, base64ToArrayBuffer} from './arraybuffer_utils';
 
 export function CreationApp() {

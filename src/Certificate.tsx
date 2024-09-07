@@ -1,7 +1,7 @@
 import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
-import {stringToBase64URL, stringFromBase64URL} from "./base64url";
+import {stringFromBase64URL} from "./base64url";
 import {stringToArrayBuffer, base64ToArrayBuffer, arrayBufferToBase64, arrayBufferToString, hexToArrayBuffer, arrayBufferToHex} from './arraybuffer_utils';
 import './certificate.css';
 
@@ -111,8 +111,8 @@ export function certificateToString( cert: Certificate ) {
 }
 
 
-export async function certificateFromQuery(abCert: ArrayBuffer) {
-    let icert : ReactNode | null = null;
+export async function certificateFromQuery(abCert: ArrayBuffer, certURL: string) {
+    let icert : CertificateInfo | null = null;
 
     try {
         const b64 = arrayBufferToBase64(abCert);
@@ -126,16 +126,16 @@ export async function certificateFromQuery(abCert: ArrayBuffer) {
     return icert;
 }
 
-async function hashCertificate( s: string ) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(s);
-    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-    const hashHex = hashArray
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join(""); // convert bytes to hex string
-    return hashHex;
-}
+// async function hashCertificate( s: string ) {
+//     const encoder = new TextEncoder();
+//     const data = encoder.encode(s);
+//     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+//     const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+//     const hashHex = hashArray
+//         .map((b) => b.toString(16).padStart(2, "0"))
+//         .join(""); // convert bytes to hex string
+//     return hashHex;
+// }
 
 export function splitCertificateParam( ab: ArrayBuffer, keyLength = 64) {
     const certData = ab.slice(0,ab.byteLength-keyLength*2);
