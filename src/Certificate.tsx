@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import FIRA2024 from './assets/fira2024.svg';
 import {stringFromBase64URL} from "./base64url";
 import {stringToArrayBuffer, base64ToArrayBuffer, arrayBufferToBase64, arrayBufferToString, hexToArrayBuffer, arrayBufferToHex} from './arraybuffer_utils';
-import './certificate.css';
+import './Certificate.css';
 
 export interface Certificate {
     competition: string;
