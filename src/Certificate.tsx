@@ -37,7 +37,11 @@ function background_factory( event: string) {
 export async function createCertificateURLData( cert: Certificate, privateKey: CryptoKey ) {
     const s = certificateToString(cert);
     
-    const signed = await window.crypto.subtle.sign( {name: "Ed25519"}, privateKey, stringToArrayBuffer(s));
+    const signed = await window.crypto.subtle.sign( 
+        //{name: "Ed25519"}, 
+        {name: "RSASSA-PKCS1-v1_5", hash: "SHA-256"},
+        privateKey, 
+        stringToArrayBuffer(s));
     const signedHex = arrayBufferToHex(signed);
 
     const data = stringToArrayBuffer(s + signedHex);
@@ -137,14 +141,14 @@ export async function certificateFromQuery(abCert: ArrayBuffer, certURL: string)
 //     return hashHex;
 // }
 
-export function splitCertificateParam( ab: ArrayBuffer, keyLength = 64) {
+export function splitCertificateParam( ab: ArrayBuffer, keyLength:Number) {
     const certData = ab.slice(0,ab.byteLength-keyLength*2);
     const certSignature = hexToArrayBuffer(arrayBufferToString(ab.slice(ab.byteLength-keyLength*2, ab.byteLength)));
 
     return [certData, certSignature];
 }
 
-export async function certificateFromURL(url:string, keyLength = 64) : Promise<CertificateInfo|null> {
+export async function certificateFromURL(url:string, keyLength:Number) : Promise<CertificateInfo|null> {
     const searchParams = new URLSearchParams(url.split('?')[1]);
     const b64cert:string|null = searchParams.get('p');
 
@@ -158,9 +162,9 @@ export async function certificateFromURL(url:string, keyLength = 64) : Promise<C
   
 
         try {
-            const certJSON = JSON.parse(arrayBufferToString(certData));
-            certInfo = await createCertificate(certJSON, url);
-            
+            const s = arrayBufferToString(certData);
+            const certJSON = JSON.parse(s);
+            certInfo = await createCertificate(certJSON, url);          
         } catch {
             certInfo = null;
         }

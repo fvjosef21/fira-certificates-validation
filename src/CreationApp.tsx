@@ -20,7 +20,8 @@ export function CreationApp() {
     urlRoot = window.location.toString();
   }
 
-  const testPrivateKey = "MC4CAQAwBQYDK2VwBCIEIKPF19ZmsAH5SlKKr9nwnmBSvrY2PBAPjGoi7POYkFe5";
+  //const testPrivateKey = "MC4CAQAwBQYDK2VwBCIEIKPF19ZmsAH5SlKKr9nwnmBSvrY2PBAPjGoi7POYkFe5"; // Ed25519
+  const testPrivateKey = "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQD7xD2MafOyuMJ5rr19UVX0bcodABX3zYqFIxNuauka0Nnc++7nd7JqbUVDJFjzZQ4VdU4T7n5tZ9d0RtBUX57J6AuFs20fBrE5LMCoZxxxeUFqWKTKWQckk6blsZ7Ql4VYOj2Yh06dUr4q+BQ7hDGfv62Nrx93XRc/wd4xQW9XhQxRwcnThyNVdO0RJXje0wTs4oKABQ1NMdBVIPDUGokuIapDWliDvop086D/MfJ1+RSl/7Qcm1bYF3QFhp5pO+soc4sIVumjcrT5X8NikH3Hyk6zVng3N03wpBxpwujXH7idIor+cg4qSq+g+9FTlMp4gtlQAnagsVwncZdcoocTAgMBAAECggEAb76KEuhz4b9fkeKc+CJBpFuWeYiwN2xjLvSCi1+oVt6b1Bl9z/6wkcwuEb7wPBd+SMfn/7C7LJQKbPGBRfGq6LK1aoJYzIyL3HSgjh414aeQAUOW4LjjErj2Ory7YJnf9WjkLe7gVbOD9E5nrILgA6dvwJMZxEDtML87f2ErqgviLqJ2YBqjdLOWRQ8e9CTkZ9P5qI5lD2YEjzXVqmZsjRLLbVjzxSdWJCjprL/QU24Zxf6jLsRisD6sstTD+Ycks+bs59AKvvK+awI+8ZOldxUpeI4oBR4/nY7MG01jT6csHZIoL0Ser+CHkR1CypRfSypaR1qMhiBrIXZ7imJnAQKBgQD+sWnGhd8/uFP6OkVqg2T355vdpL954r4vM7ZP7pxtlP/s4AKLXsMBmsOskBIcL7pAjQMuGCZ6Y/gB09CZnBYoEkG83bq1NV2bxBo+6eILgC5kelo9ggaHzeiK9PkIyR37pn7wiRbz9b1K+VAW/cTWR5vWarPOIXijzXWfz4jY1wKBgQD9DvuYQxX5ch5RP+AFUPnN0u57NMI3n90Qd+z6u9iXD7P4h1pTf22iqTE9v5YlhjBZaZlPQ3l+xYBaYiNfFAUb19o2PTl4u9V5Q1jcums3UzP9QKm1C+B34USi1AlA9fnjyU/ovQ7woCQjuacL8DjqDnV3nZcksGSAkpPKe6hQJQKBgQC442OM6Ovant3ffWOc4ctvJyP/7zPMsGwtadXECsxlxE9QzoEqWV0okgfQAjoTWhZT+8m+MWvlVyLXeMMqb6Op7S7pgvCh0R6mD+KZn0En5iJHcIaHthc1iKVyEkmiNhVc9E2cIXiXGuISRg/80LWOdCdNrOHgFm40QtdLbuXBuwKBgQDocGuutugnQKgST06Q84kQgk/lQVenyiI+7zjwMbzHPHg9ru3Lxj9I6om9Qw5CF1ivuCxGvx6I0BaObpg4y+XJZmIb8e6pNDbn9HFaBa1Xmwgk9dEr5+Xdlz/5JDP/xDAtB4trpsRjR2UKn4uNjrBoZLGHFmxvGcqmwnwXv6+hNQKBgQDWCPsSzIgS4M3WXrd+Qc+Zesn5rsLiVqaGFpy6uazmPeiuF6bS27OYevhbctIVKTbzUejMA1PEM01DkGcNY+Pe4/a+MYHo0/hriczehOPnuUFQuFIn/AN2Tt13Apv3Og/9dCae/lMFAkUyTElGkQwll0Q7hDeQ3+UdJOCX/pPP9A==";
 
   function jsonLoader(certs_in: object[]) {
     console.log(`Loaded json ${JSON.stringify(certs_in)}`);
@@ -74,7 +75,8 @@ export function CreationApp() {
   if (privateKey === undefined) {
     window.crypto.subtle.importKey("pkcs8", 
       base64ToArrayBuffer(testPrivateKey),
-      { name: 'Ed25519' },
+      //{ name: 'Ed25519' }, //Ed25519
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256'}, // RSASSA-PKCS1-v1_5
       false,
       [ "sign"]
     ).then((key) => {
@@ -110,15 +112,15 @@ export function CreationApp() {
   }
 
   window.crypto.subtle.generateKey(
-    // {
-    //   name: "RSASSA-PKCS1-v1_5",
-    //   modulusLength:4096,
-    //   publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-    //   hash: "SHA-256"
-    // },
     {
-      name: "Ed25519",
+      name: "RSASSA-PKCS1-v1_5",
+      modulusLength:2048,
+      publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+      hash: "SHA-256"
     },
+    // {
+    //   name: "Ed25519",
+    // },
     true,
     ["sign", "verify"],
   ).then((kpIn) => {
