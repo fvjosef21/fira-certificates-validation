@@ -141,14 +141,14 @@ export async function certificateFromQuery(abCert: ArrayBuffer, certURL: string)
 //     return hashHex;
 // }
 
-export function splitCertificateParam( ab: ArrayBuffer, keyLength:Number) {
+export function splitCertificateParam( ab: ArrayBuffer, keyLength:number) {
     const certData = ab.slice(0,ab.byteLength-keyLength*2);
     const certSignature = hexToArrayBuffer(arrayBufferToString(ab.slice(ab.byteLength-keyLength*2, ab.byteLength)));
 
     return [certData, certSignature];
 }
 
-export async function certificateFromURL(url:string, keyLength:Number) : Promise<CertificateInfo|null> {
+export async function certificateFromURL(url:string, keyLength:number) : Promise<CertificateInfo|null> {
     const searchParams = new URLSearchParams(url.split('?')[1]);
     const b64cert:string|null = searchParams.get('p');
 

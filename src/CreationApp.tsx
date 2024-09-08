@@ -146,9 +146,7 @@ export function CreationApp() {
 
     window.crypto.subtle.exportKey("spki", pubK).then((ekey) => {
       console.log(`Public Key (spki) ${ekey}`);
-      const b64 = arrayBufferToBase64(ekey);
-      console.log(`Base64 ${b64}`);
-      console.log(`Public Key: ${b64}`);
+      console.log(`Public Key: ${arrayBufferToBase64(ekey)}`);
     });
   });  
 
