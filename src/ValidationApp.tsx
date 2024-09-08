@@ -89,7 +89,7 @@ export function ValidationApp() {
         certificateUnion && 
         <div className={certificateUnion.publicKeyIndex !== 0 ? 'validcertificate':'testcertificate'}> 
           {certificateUnion.certificateInfo.node}
-          <div class="testcertificateoverlay">
+          <div className="testcertificateoverlay">
             Test Certificate Only
           </div>
         </div>
