@@ -41,7 +41,7 @@ export function CreationApp() {
             if (_certificateInfos.length === certs.length) {
               setCertificateInfos(_certificateInfos);
 
-              const data = _certificateInfos.map( (mem,i) => {
+              const data = _certificateInfos.map( (mem) => {
                 const rec = { 
                   competition: mem.cert.competition,
                   league: mem.cert.league,
