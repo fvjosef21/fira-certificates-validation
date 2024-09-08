@@ -130,18 +130,22 @@ export function CreationApp() {
     const pubK = kp['publicKey'];
     
     window.crypto.subtle.exportKey("jwk", privK).then((ekey) => {
+      console.log(`Private Key (jwk) ekey ${ekey}`);
       console.log(`Private Key: ${JSON.stringify(ekey)}`);
     });
     
     window.crypto.subtle.exportKey("pkcs8", privK).then((ekey) => {
+      console.log(`Private Key (pkcs8) ekey ${ekey}`);
       console.log(`Private Key: ${arrayBufferToBase64(ekey)}`);
     });
 
     window.crypto.subtle.exportKey("jwk", pubK).then((ekey) => {
+      console.log(`Public Key (jwk) ekey ${ekey}`);
       console.log(`Public Key: ${JSON.stringify(ekey)}`);
     });
 
     window.crypto.subtle.exportKey("spki", pubK).then((ekey) => {
+      console.log(`Public Key (spki) ${ekey}`);
       console.log(`Public Key: ${arrayBufferToBase64(ekey)}`);
     });
   });  
