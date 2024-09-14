@@ -1,6 +1,6 @@
 import './App.css';
-import {CreationApp} from './CreationApp';
-import {ValidationApp} from './ValidationApp';
+import {CreationApp} from './components/CreationApp';
+import {ValidationApp} from './components/ValidationApp';
 
 export function App() {
   const searchParams = new URLSearchParams(document.location.search);
