@@ -47,7 +47,7 @@ export function ValidationApp() {
     //cert = btoa(cert);
     const ab = base64ToArrayBuffer(b64cert);
     
-    const [certData, certSignature] = splitCertificateParam(ab, keyLength);
+    const [certVersion, certData, certSignature] = splitCertificateParam(ab, keyLength);
 
     if (publicKeys !== undefined) {
       for(let publicKeyIndex = 0; publicKeyIndex < publicKeys.length; publicKeyIndex++) {
