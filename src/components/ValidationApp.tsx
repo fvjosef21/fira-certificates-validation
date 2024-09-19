@@ -46,6 +46,7 @@ export function ValidationApp() {
     //cert = btoa(cert);
     const ab = hexToArrayBuffer(b64cert);
     
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [certVersion, certData, certSignature] = splitCertificateParam(ab);
 
     if (publicKeys !== undefined) {
