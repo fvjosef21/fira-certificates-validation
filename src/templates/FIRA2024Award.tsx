@@ -1,4 +1,3 @@
-import React from'react';
 import './FIRA2024Award.css';
 
 function FIRA2024Award() {
