@@ -1,27 +1,31 @@
 .certificate {
     position: relative;
-    top: 1cm;
-    left: 1cm;
-    width: 100%;
-    height: 100%;
+    top: 0cm;
+    left: 0cm;
+    width: 210mm;
+    height: 297mm;
+
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .competition {
     text-align: center;
-    font-size: 64pt;
+    font-size: 16pt;
     position: absolute;
-    top: 10cm;
+    top: 4cm;
     left: 12cm;
     width: 3cm;
+    visibility: hidden;
 }
 
 .league {
     text-align: center;
-    font-size: 48pt;
+    font-size: 32pt;
     position: absolute;
     top: 9cm;
     left: 24cm;
     width: 19cm;
+    visibility: hidden;
 }
 
 .type {
@@ -29,17 +33,17 @@
     font-size: 54pt;
     position: absolute;
     top: 14cm;
-    left: 24cm;
-    width: 19cm;
+    left: 60mm;
+    width: 210mm;
 }
 
 .team {
     text-align: center;
     font-size: 36pt;
     position: absolute;
-    top: 19cm;
-    left: 18cm;
-    width: 30cm;
+    top: 17cm;
+    left: 60mm;
+    width: 210mm;
 }
 
 .memberTableDiv {
@@ -49,6 +53,7 @@
     top: 24cm;
     left: 29cm;
     width: 19cm;
+    visibility: hidden;
 }
 
 .qrcode {
@@ -57,8 +62,8 @@
     margin: 0 auto;
     max-width: 320;
     position: absolute;
-    top: 27cm;
-    left: 9cm;
+    top: 0cm;
+    left: 0cm;
     background: whitesmoke;
     padding: 16px;
 }

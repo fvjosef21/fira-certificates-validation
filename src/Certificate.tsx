@@ -1,8 +1,9 @@
 import {ReactNode} from 'react';
 import QRCode from "react-qr-code";
-import FIRA2024 from './assets/fira2024.svg';
-import {base64EncodeUnicode, stringToArrayBuffer} from './arraybuffer_utils';
+//import FIRA2024 from './assets/fira2024.svg';
+import {arrayBufferToBase64, arrayBufferToHex, arrayBufferToString, hexToArrayBuffer, stringToArrayBuffer} from './arraybuffer_utils';
 import './Certificate.css';
+import FIRA2024Award  from './templates/FIRA2024Award';
 
 export const certVersionLength = 3;
 
@@ -29,13 +30,13 @@ function background_factory( event: string) {
     let bg = null;
 
     if (event === "FIRA 2024") {
-        bg = FIRA2024;
+        bg = FIRA2024Award();
     }
 
     return bg;
 }
 
-export async function createCertificateURLData( cert: Certificate, privateKey: CryptoKey ) : ArrayBuffer {
+export async function createCertificateURLData( cert: Certificate, privateKey: CryptoKey) : Promise<ArrayBuffer> {
     const s = certificateToString(cert);
     const sAB = new Uint8Array(stringToArrayBuffer(s));
 
@@ -51,9 +52,9 @@ export async function createCertificateURLData( cert: Certificate, privateKey: C
     const certVersion = 1 % Math.pow(256,3);
 
     const data = new Uint8Array(certVersionLength + sAB.byteLength + signed.byteLength);
-    data[0] = (certVersion >> 16) && 0xff;
-    data[1] = (certVersion >> 8) && 0xff;
-    data[2] = certVersion && 0xff;
+    data[0] = (certVersion >> 16) & 0xff;
+    data[1] = (certVersion >> 8) & 0xff;
+    data[2] = certVersion & 0xff;
 
     data.set(sAB,3);
     data.set(signedUint8,certVersionLength + sAB.length);
@@ -61,10 +62,10 @@ export async function createCertificateURLData( cert: Certificate, privateKey: C
     return data.buffer;
 }
 
-export async function createCertificateURL( cert: Certificate, privateKey: CryptoKey, urlRoot : string) {
+export async function createCertificateURL(cert: Certificate, privateKey: CryptoKey, urlRoot : string) {
     const d = await createCertificateURLData(cert, privateKey);
 
-    return `${urlRoot}?p=${arrayBufferToBase64(d)}`;
+    return `${urlRoot}?p=${arrayBufferToHex(d)}`;
 }
 
 export async function createCertificate( cert : Certificate, certURL: string) : Promise<CertificateInfo> {
@@ -74,7 +75,7 @@ export async function createCertificate( cert : Certificate, certURL: string) : 
         <>
             <div className="certificate">
                 <div className="background">
-                    {bg !== null && <img src={bg} className="svg" alt="FIRA 2024 Certificate Background" />}
+                    {bg !== null && bg}
                 </div>
                 <div className="competition"> 
                     {cert.competition}
@@ -109,7 +110,7 @@ export async function createCertificate( cert : Certificate, certURL: string) : 
                 <div className="qrcode">
                     <div >
                         <QRCode
-                            size={280}
+                            size={160}
                             value={certURL}
                         />
                     </div>
@@ -132,9 +133,8 @@ export async function certificateFromQuery(abCert: ArrayBuffer, certURL: string)
     let icert : CertificateInfo | null = null;
 
     try {
-        const b64 = base64EncodeUnicode(abCert);
-        const s = stringFromBase64URL(b64);
-        const cert = JSON.parse(s);
+        const b64 = arrayBufferToBase64(abCert);
+        const cert = JSON.parse(b64);
         icert = await createCertificate(cert, certURL);
     } catch {
         icert = null;
@@ -154,7 +154,7 @@ export async function certificateFromQuery(abCert: ArrayBuffer, certURL: string)
 //     return hashHex;
 // }
 
-export function splitCertificateParam( ab: ArrayBuffer):[number,string,ArrayBuffer] {
+export function splitCertificateParam(ab: ArrayBuffer):[number,string,ArrayBuffer] {
     const v = ab as Uint8Array;
     const certVersion = v[0]*65536+v[1]*256+v[2];
     let keyLength = 0;
@@ -163,7 +163,7 @@ export function splitCertificateParam( ab: ArrayBuffer):[number,string,ArrayBuff
     } else if (certVersion === 2) {
         keyLength = 64;
     }
-    const certData = base64DecodeBase64(ab.slice(certVersionLength,ab.byteLength-keyLength));
+    const certData = arrayBufferToString(ab.slice(certVersionLength,ab.byteLength-keyLength));
     const certSignature = ab.slice(ab.byteLength-keyLength, ab.byteLength);
 
     return [certVersion, certData, certSignature];
@@ -177,12 +177,12 @@ export async function certificateFromURL(url:string) : Promise<CertificateInfo|n
 
     if (b64cert !== null ) {
         //cert = btoa(cert);
-        const ab = base64ToArrayBuffer(b64cert);
+        const ab = hexToArrayBuffer(b64cert);
       
         const [certVersion, certData, certSignature] = splitCertificateParam(ab);
   
         try {
-            const s = arrayBufferToString(certData);
+            const s = arrayBufferToString(stringToArrayBuffer(certData));
             const certJSON = JSON.parse(s);
             certInfo = await createCertificate(certJSON, url);          
         } catch {

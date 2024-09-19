@@ -10,7 +10,7 @@ export function arrayBufferToBase64(buffer : ArrayBuffer) {
 }
 
 export function base64ToArrayBuffer(base64: string): ArrayBuffer {
-    const binaryString = base64EncodeUnicode(base64); // window.atob(base64);
+    const binaryString = window.atob(base64);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
     for (let i = 0; i < len; i++) {
@@ -68,30 +68,30 @@ export function hexToArrayBuffer( hexString: string) {
     return Uint8Array.from(hexString.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)));
 }
 
-// Encoding UTF-8 ⇢ base64
+// // Encoding UTF-8 ⇢ base64
 
-export function base64EncodeUnicode(str:string) : string {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode(parseInt(p1, 16))
-    }))
-}
+// export function base64EncodeUnicode(str:string) : string {
+//     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+//         return String.fromCharCode(parseInt(p1, 16))
+//     }))
+// }
 
-// Decoding base64 ⇢ UTF-8
+// // Decoding base64 ⇢ UTF-8
 
-export function base64DecodeUnicode(str:string) {
-    return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    }).join(''))
-}
+// export function base64DecodeUnicode(str:string) {
+//     return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+//         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+//     }).join(''))
+// }
 
-export function base64ToBytes(base64:string) {
-    const binString = atob(base64);
-    return Uint8Array.from(binString, (m) => m.codePointAt(0));
-  }
+// export function base64ToBytes(base64:string) {
+//     const binString = atob(base64);
+//     return Uint8Array.from(binString, (m) => m.codePointAt(0));
+//   }
   
-export function bytesToBase64(bytes:ArrayBuffer) {
-    const binString = Array.from(bytes, (byte) =>
-      String.fromCodePoint(byte),
-    ).join("");
-    return btoa(binString);
-  }
+// export function bytesToBase64(bytes:ArrayBuffer) {
+//     const binString = Array.from(bytes, (byte) =>
+//       String.fromCodePoint(byte),
+//     ).join("");
+//     return btoa(binString);
+//   }
