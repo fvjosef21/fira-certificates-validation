@@ -179,8 +179,9 @@ export async function certificateFromURL(url:string) : Promise<CertificateInfo|n
         //cert = btoa(cert);
         const ab = hexToArrayBuffer(b64cert);
       
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [certVersion, certData, certSignature] = splitCertificateParam(ab);
+
+        console.log(`${certVersion} ${certSignature}`); // Just to shut up the no unused variable error
   
         try {
             const s = arrayBufferToString(stringToArrayBuffer(certData));

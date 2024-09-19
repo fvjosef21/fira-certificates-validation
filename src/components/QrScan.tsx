@@ -1,4 +1,3 @@
-import React from 'react';
 import {useEffect, useRef, useState} from 'react';
 import QrScanner from 'qr-scanner';
 
