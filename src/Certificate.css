@@ -6,6 +6,7 @@
     height: 297mm;
 
     font-family: 'Times New Roman', Times, serif;
+    z-index: 100;
 }
 
 .competition {
@@ -70,11 +71,11 @@
 
 .testcertificate {
     position: absolute; /* Sit on top of the page content */
-    width: 100%;     /* Full width */
-    height: 100%;    /* Full height */
+    width: 210mm;     /* Full width */
+    height: 297mm;    /* Full height */
     top: 0;
     left: 0;
-    background-color: rgba(255, 10, 18, 0.75); /* Black background with opacity */
-    z-index: 2;      /* Specify a stack order */
-    cursor: pointer; /* Add a pointer on hover */
+    font-size: 128pt;
+    background-color: yellow /* Black background with opacity */
+    z-index: 20;      /* Specify a stack order */
   }
